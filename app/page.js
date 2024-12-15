@@ -11,14 +11,15 @@ import mainlogo from './assets/logomain.png'
 
 
 
-const page = () => {
+const Page = () => {
 
   const [voteId, setVoteId] = useState("");
   const [candidateName, setCandidateName] = useState("");
   const [message, setMessage] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
       e.preventDefault();
+      setLoading(true); 
 
       try {
           const response = await fetch("/api/vote", {
@@ -40,6 +41,9 @@ const page = () => {
           window.alert("An error occurred. Please try again.");
           console.log(error)
       }
+      finally {
+            setLoading(false); // Stop loading
+        }
   };
 
 
@@ -59,6 +63,17 @@ const page = () => {
           </div>
           <div className='xl:flex-1 flex flex-col items-center h-auto justify-center xl:justify-between px-10 xl:px-5 xl:pt-16 gap-5'>
               <p className='font-medium text-center w-[85%] lg:w-full text-white drop-shadow-[0_0_5px_rgba(255,255,255,1)] mx-2'>Vote now for the Best Dressed and help us crown the ultimate retro vintage style icon!</p>
+              {loading && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h2 className="text-xl font-semibold text-gray-800">Processing your vote...</h2>
+                        <div className="mt-4">
+                            <div className="loader"></div> {/* Add your loading spinner here */}
+                        </div>
+                        <p className="mt-4 text-gray-600">Please wait while we process your vote.</p>
+                    </div>
+                </div>
+            )}
               <form onSubmit={handleSubmit} className='relative h-[598px] w-[560px] hidden xl:flex flex-col items-center justify-start'>
                 <Image className='absolute z-0' src={gameboy_site}/>
                 <p className='absolute top-[25%] text-2xl font-bold text-center text-[#ffa5dc] drop-shadow-[0_0_10px_rgba(255,102,196,1)] w-3/6'>BEST DRESSED</p>
@@ -85,4 +100,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
